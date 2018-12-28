@@ -7,4 +7,5 @@ type CPacket struct {
 type CmdCode interface {
 	Write(buf *NativeBuffer)
 	Read(buf *NativeBuffer)
+	Copy()CmdCode
 }
