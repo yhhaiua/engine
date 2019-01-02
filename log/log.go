@@ -22,3 +22,7 @@ func (l *Logger)Error(arg0 interface{}, args ...interface{}){
 func (l *Logger)InfoLog(name string,arg interface{}){
 	log4go.InfoLog(name,arg)
 }
+
+func (l *Logger)Config(dir string){
+	log4go.LoadConfiguration(dir)
+}

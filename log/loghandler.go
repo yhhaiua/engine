@@ -5,5 +5,6 @@ type LogHandler interface {
 	Warn(arg0 interface{}, args ...interface{})
 	Error(arg0 interface{}, args ...interface{})
 	InfoLog(name string,arg interface{})
+	Config(dir string)
 }
 
