@@ -1,4 +1,4 @@
-package myredis
+package gredis
 
 import (
 	"github.com/garyburd/redigo/redis"
