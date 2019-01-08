@@ -30,7 +30,7 @@ func (server *TCPServer)Listen() error {
 		gLog.Error(err)
 		return err
 	}
-	gLog.Info("tcp 监听成功:%s",server.addr)
+	gLog.Info("tcp success:%s",server.addr)
 	server.ln = lister
 	go server.run()
 	return nil

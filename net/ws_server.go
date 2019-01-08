@@ -52,12 +52,12 @@ func (ws *WSServer)Listen() error {
 		Addr:ws.addr,
 		Handler : ws,
 	}
-
+	gLog.Info("websocket start monitor :%s",ws.addr)
 	err := srv.ListenAndServe()
 	if err != nil {
-		gLog.Error("websocket监听失败 %s", err)
+		gLog.Error("websocket monitor fail %s", err)
 		return err
 	}
-	gLog.Info("websocket监听成功:%s",ws.addr)
+
 	return nil
 }

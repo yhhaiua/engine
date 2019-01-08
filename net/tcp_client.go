@@ -34,6 +34,7 @@ func (client *TCPClient)Connect()  {
 	}
 	conn := client.dial()
 	if conn != nil {
+		gLog.Info("%s,tcp connect success:%s",client.index,client.addr)
 		client.tcpConn = newTcpConn(conn,client)
 		if client.tcpConn != nil{
 			client.tcpConn.start()
