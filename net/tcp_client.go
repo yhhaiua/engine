@@ -10,12 +10,12 @@ var mTCPConnMap *sync.Map
 
 
 type TCPClient struct {
-	index 	   int
+	index 	   string
 	addr       string
 	listener   SocketListener
 	tcpConn	   *TCPConn
 }
-func NewTCPClient(index int,addr string,listener SocketListener) *TCPClient{
+func NewTCPClient(index string,addr string,listener SocketListener) *TCPClient{
 	client:= &TCPClient{
 		addr:addr,
 		listener:listener,
@@ -48,7 +48,7 @@ func (client *TCPClient) dial() net.Conn {
 	if err == nil {
 		return conn
 	}
-	gLog.Error("tcp connect err,wait again: %v",err)
+	gLog.Error("%s,tcp connect err,wait again: %v",client.index,err)
 	return nil
 }
 

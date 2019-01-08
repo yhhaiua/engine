@@ -1,51 +1,45 @@
 package net
 
 import (
+	"github.com/gorilla/websocket"
 	"github.com/yhhaiua/engine/buffer"
 	"github.com/yhhaiua/engine/handler"
-	"net"
-	//"sync"
 )
 
-const DataLength  = 32
-
-type TCPConn struct {
-	//sync.Mutex
-	conn 		net.Conn
+type WSConn struct {
+	conn 		*websocket.Conn
 	receive 	*buffer.ByteBuf
-	//send 		*buffer.ByteBuf
 	listener    SocketListener
 	hd 			handler.Handler
 	data 		chan []byte
 	connected 	bool
-
+	ip 			string
 }
 
-func newTcpConn(conn net.Conn,listener SocketListener) *TCPConn {
-	t := new(TCPConn)
+func newWSConn(conn *websocket.Conn,listener SocketListener,ip string) *WSConn {
+	t := new(WSConn)
 	t.conn = conn
 	t.listener = listener
 	t.receive = buffer.NewByteBuf()
-	//t.send = buffer.NewByteBuf()
 	t.data = make(chan []byte,DataLength)
 	t.connected = true
-	hd,err := handler.NewLengthDecoder()
+	hd,err := handler.NewWsDecoder()
 	if err != nil{
-		gLog.Error("new TcpConn err: %v",err)
+		gLog.Error("new WSConn err: %v",err)
 		return nil
 	}
 	t.hd = hd
+	t.ip = ip
 	return t
 }
-
-func (t *TCPConn) start() {
+func (t *WSConn) start() {
 
 	t.listener.OnConnected(t)
 	go t.read()
 	go t.run()
 }
 
-func (t *TCPConn)read()  {
+func (t *WSConn)read()  {
 
 	defer func() {
 		if r := recover();r != nil{
@@ -55,12 +49,13 @@ func (t *TCPConn)read()  {
 		}
 	}()
 	for  {
-		err := t.receive.ReadFrom(t.conn)
+		_, b, err := t.conn.ReadMessage()
 		if err != nil{
 			t.close()
 			t.listener.OnDisconnected(t)
 			return
 		}
+		t.receive.Write(b)
 		msg,err := t.hd.Decode(t.receive)
 		if err != nil{
 			gLog.Error("msg err: %v",err)
@@ -72,7 +67,7 @@ func (t *TCPConn)read()  {
 	}
 }
 
-func (t *TCPConn)run()  {
+func (t *WSConn)run()  {
 	defer func() {
 		if r := recover();r != nil{
 			gLog.Error(" abnormal:%v",r)
@@ -88,13 +83,13 @@ func (t *TCPConn)run()  {
 				return
 			}
 			if msg != nil && t.connected{
-				t.conn.Write(msg)
+				t.conn.WriteMessage(websocket.BinaryMessage, msg)
 			}
 		}
 	}
 }
 
-func (t *TCPConn)WriteAndFlush(msg []byte)()  {
+func (t *WSConn)WriteAndFlush(msg []byte)()  {
 	defer func() {
 		if r := recover();r != nil{
 			gLog.Error(" WriteAndFlush:%v",r)
@@ -103,15 +98,14 @@ func (t *TCPConn)WriteAndFlush(msg []byte)()  {
 	t.data <- msg
 }
 
-func (t *TCPConn)Close()  {
+func (t *WSConn)Close()  {
 	close(t.data)
 }
-func (t *TCPConn)String() string  {
-	return t.conn.RemoteAddr().String()
+func (t *WSConn)String() string  {
+	return t.ip
 }
-func (t *TCPConn)close(){
-	//t.Lock()
-	//defer t.Unlock()
+func (t *WSConn)close(){
+
 	if !t.connected{
 		return
 	}
