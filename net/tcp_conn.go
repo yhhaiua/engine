@@ -10,15 +10,13 @@ import (
 const DataLength  = 32
 
 type TCPConn struct {
-	//sync.Mutex
 	conn 		net.Conn
 	receive 	*buffer.ByteBuf
-	//send 		*buffer.ByteBuf
 	listener    SocketListener
 	hd 			handler.Handler
 	data 		chan []byte
 	connected 	bool
-
+	closedata  	bool
 }
 
 func newTcpConn(conn net.Conn,listener SocketListener) *TCPConn {
@@ -26,7 +24,6 @@ func newTcpConn(conn net.Conn,listener SocketListener) *TCPConn {
 	t.conn = conn
 	t.listener = listener
 	t.receive = buffer.NewByteBuf()
-	//t.send = buffer.NewByteBuf()
 	t.data = make(chan []byte,DataLength)
 	t.connected = true
 	hd,err := handler.NewLengthDecoder()
@@ -95,6 +92,9 @@ func (t *TCPConn)run()  {
 }
 
 func (t *TCPConn)WriteAndFlush(msg []byte)()  {
+	if t.closedata{
+		return
+	}
 	defer func() {
 		if r := recover();r != nil{
 			gLog.Error(" WriteAndFlush:%v",r)
@@ -104,6 +104,10 @@ func (t *TCPConn)WriteAndFlush(msg []byte)()  {
 }
 
 func (t *TCPConn)Close()  {
+	if t.closedata{
+		return
+	}
+	t.closedata = true
 	close(t.data)
 }
 func (t *TCPConn)String() string  {

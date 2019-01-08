@@ -14,6 +14,7 @@ type WSConn struct {
 	data 		chan []byte
 	connected 	bool
 	ip 			string
+	closedata  	bool
 }
 
 func newWSConn(conn *websocket.Conn,listener SocketListener,ip string) *WSConn {
@@ -90,6 +91,9 @@ func (t *WSConn)run()  {
 }
 
 func (t *WSConn)WriteAndFlush(msg []byte)()  {
+	if t.closedata{
+		return
+	}
 	defer func() {
 		if r := recover();r != nil{
 			gLog.Error(" WriteAndFlush:%v",r)
@@ -99,6 +103,10 @@ func (t *WSConn)WriteAndFlush(msg []byte)()  {
 }
 
 func (t *WSConn)Close()  {
+	if t.closedata{
+		return
+	}
+	t.closedata = true
 	close(t.data)
 }
 func (t *WSConn)String() string  {
