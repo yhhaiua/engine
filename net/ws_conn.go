@@ -4,9 +4,11 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/yhhaiua/engine/buffer"
 	"github.com/yhhaiua/engine/handler"
+	"sync"
 )
 
 type WSConn struct {
+	sync.Mutex
 	conn 		*websocket.Conn
 	receive 	*buffer.ByteBuf
 	listener    SocketListener
@@ -91,18 +93,17 @@ func (t *WSConn)run()  {
 }
 
 func (t *WSConn)WriteAndFlush(msg []byte)()  {
+	t.Lock()
+	defer t.Unlock()
 	if t.closedata{
 		return
 	}
-	defer func() {
-		if r := recover();r != nil{
-			gLog.Error(" WriteAndFlush:%v",r)
-		}
-	}()
 	t.data <- msg
 }
 
 func (t *WSConn)Close()  {
+	t.Lock()
+	defer t.Unlock()
 	if t.closedata{
 		return
 	}

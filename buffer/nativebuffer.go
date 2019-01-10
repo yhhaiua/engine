@@ -27,6 +27,13 @@ func (buf *NativeBuffer)ReadNString() string  {
 	length := buf.ReadNInt16()
 	return  string(buf.Next(length))
 }
+
+//ReadNShort 读取int16
+func (buf *NativeBuffer)ReadNInt8() int8 {
+	var v int8
+	binary.Read(buf, buf.byteOrder,&v)
+	return v
+}
 //ReadNInt16 读取int16 返回int
 func (buf *NativeBuffer)ReadNInt16() int {
 	var v int16
@@ -55,10 +62,69 @@ func (buf *NativeBuffer)ReadNInt64() int64  {
 	return v
 }
 
+func (buf *NativeBuffer)ReadNBytes() []byte {
+	len := buf.ReadNInt16()
+	if len == 0{
+		return nil
+	}
+	result := buf.Next(len)
+	return result
+}
+
+func (buf *NativeBuffer)ReadNInt16Array() []int16 {
+	len := buf.ReadNInt16()
+	if len == 0 || len > 1000{
+		return nil
+	}
+	result := make([]int16,len)
+	for i:= 0;i < len;i++{
+		result[i] = buf.ReadNShort()
+	}
+	return result
+}
+
+func (buf *NativeBuffer)ReadNInt32Array() []int32 {
+	len := buf.ReadNInt16()
+	if len == 0 || len > 1000{
+		return nil
+	}
+	result := make([]int32,len)
+	for i:= 0;i < len;i++{
+		result[i] = buf.ReadNInt32()
+	}
+	return result
+}
+func (buf *NativeBuffer)ReadNInt64Array() []int64 {
+	len := buf.ReadNInt16()
+	if len == 0 || len > 1000{
+		return nil
+	}
+	result := make([]int64,len)
+	for i:= 0;i < len;i++{
+		result[i] = buf.ReadNInt64()
+	}
+	return result
+}
+func (buf *NativeBuffer)ReadNStringArray() []string {
+	len := buf.ReadNInt16()
+	if len == 0 || len > 1000{
+		return nil
+	}
+	result := make([]string,len)
+	for i:= 0;i < len;i++{
+		result[i] = buf.ReadNString()
+	}
+	return result
+}
+
 //WriteNString 写入字符串
 func (buf *NativeBuffer)WriteNString(v string)  {
 	buf.WriteNInt16(len(v))
 	buf.WriteString(v)
+}
+//
+func (buf *NativeBuffer)WriteNInt8(v int8)  {
+	binary.Write(buf, buf.byteOrder, v)
 }
 
 //WriteNInt16 写入int16
@@ -79,6 +145,55 @@ func (buf *NativeBuffer)WriteNInt32(v int32)  {
 //WriteNInt64 写入int64
 func (buf *NativeBuffer)WriteNInt64(v int64)  {
 	binary.Write(buf, buf.byteOrder, v)
+}
+func (buf *NativeBuffer)WriteNBytes(v []byte){
+	if v == nil{
+		buf.WriteNInt16(0)
+		return
+	}
+	buf.WriteNInt16(len(v))
+	buf.Write(v)
+}
+func (buf *NativeBuffer)WriteNInt16Array(v []int16){
+	if v == nil{
+		buf.WriteNInt16(0)
+		return
+	}
+	buf.WriteNInt16(len(v))
+	for i:= 0;i < len(v);i++{
+		buf.WriteNShort(v[i])
+	}
+}
+func (buf *NativeBuffer)WriteNInt32Array(v []int32){
+	if v == nil{
+		buf.WriteNInt16(0)
+		return
+	}
+	buf.WriteNInt16(len(v))
+	for i:= 0;i < len(v);i++{
+		buf.WriteNInt32(v[i])
+	}
+}
+
+func (buf *NativeBuffer)WriteNInt64Array(v []int64){
+	if v == nil{
+		buf.WriteNInt16(0)
+		return
+	}
+	buf.WriteNInt16(len(v))
+	for i:= 0;i < len(v);i++{
+		buf.WriteNInt64(v[i])
+	}
+}
+func (buf *NativeBuffer)WriteNStringArray(v []string){
+	if v == nil{
+		buf.WriteNInt16(0)
+		return
+	}
+	buf.WriteNInt16(len(v))
+	for i:= 0;i < len(v);i++{
+		buf.WriteNString(v[i])
+	}
 }
 
 func (buf *NativeBuffer)SetInt(index int,value int)  {

@@ -4,12 +4,13 @@ import (
 	"github.com/yhhaiua/engine/buffer"
 	"github.com/yhhaiua/engine/handler"
 	"net"
-	//"sync"
+	"sync"
 )
 
 const DataLength  = 32
 
 type TCPConn struct {
+	sync.Mutex
 	conn 		net.Conn
 	receive 	*buffer.ByteBuf
 	listener    SocketListener
@@ -92,18 +93,17 @@ func (t *TCPConn)run()  {
 }
 
 func (t *TCPConn)WriteAndFlush(msg []byte)()  {
+	t.Lock()
+	defer t.Unlock()
 	if t.closedata{
 		return
 	}
-	defer func() {
-		if r := recover();r != nil{
-			gLog.Error(" WriteAndFlush:%v",r)
-		}
-	}()
 	t.data <- msg
 }
 
 func (t *TCPConn)Close()  {
+	t.Lock()
+	defer t.Unlock()
 	if t.closedata{
 		return
 	}
@@ -114,8 +114,6 @@ func (t *TCPConn)String() string  {
 	return t.conn.RemoteAddr().String()
 }
 func (t *TCPConn)close(){
-	//t.Lock()
-	//defer t.Unlock()
 	if !t.connected{
 		return
 	}
