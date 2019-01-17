@@ -86,7 +86,10 @@ func (t *WSConn)run()  {
 				return
 			}
 			if msg != nil && t.connected{
-				t.conn.WriteMessage(websocket.BinaryMessage, msg)
+				err := t.conn.WriteMessage(websocket.BinaryMessage, msg)
+				if err != nil{
+					gLog.Error(" WriteMessage:%v",err)
+				}
 			}
 		}
 	}

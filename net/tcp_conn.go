@@ -86,7 +86,10 @@ func (t *TCPConn)run()  {
 				return
 			}
 			if msg != nil && t.connected{
-				t.conn.Write(msg)
+				_,err := t.conn.Write(msg)
+				if err != nil{
+					gLog.Error(" Write:%v",err)
+				}
 			}
 		}
 	}
