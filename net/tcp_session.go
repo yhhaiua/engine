@@ -8,6 +8,10 @@ type TcpSession struct {
 	channel Channel
 }
 
+func (t *TcpSession) Channel() Channel {
+	return t.channel
+}
+
 func NewTcpSession(channel Channel) *TcpSession  {
 	return &TcpSession{channel:channel}
 }

@@ -10,6 +10,10 @@ func GetLogger() LogHandler {
 	return globalLog
 }
 
+func (l *Logger)Debug(arg0 interface{}, args ...interface{}){
+	log4go.Debug(arg0,args...)
+}
+
 func (l *Logger)Info(arg0 interface{}, args ...interface{}){
 	log4go.Info(arg0,args...)
 }
