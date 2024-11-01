@@ -1,7 +1,7 @@
 package net
 
 import (
-	"engine/buffer"
+	"github.com/yhhaiua/engine/buffer"
 	"net"
 	"sync"
 	"time"

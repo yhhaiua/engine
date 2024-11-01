@@ -1,8 +1,8 @@
 package log
 
 import (
-	"engine/logzap"
 	"fmt"
+	"github.com/yhhaiua/engine/logzap"
 	"go.uber.org/zap/zapcore"
 	"runtime"
 	"sync"

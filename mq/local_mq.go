@@ -1,8 +1,8 @@
 package mq
 
 import (
-	"engine/log"
 	"github.com/streadway/amqp"
+	"github.com/yhhaiua/engine/log"
 	"strings"
 )
 

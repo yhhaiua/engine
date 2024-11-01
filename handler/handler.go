@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"engine/buffer"
+	"github.com/yhhaiua/engine/buffer"
 )
 
 type Handler interface {

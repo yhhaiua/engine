@@ -1,8 +1,8 @@
 package main
 
 import (
-	"engine/cache"
 	"fmt"
+	"github.com/yhhaiua/engine/cache"
 	"math/rand"
 	"time"
 )
@@ -20,7 +20,7 @@ func main() {
 	c := cache.NewLoadingCache(load,
 		cache.WithMaximumSize(1000),
 		cache.WithExpireAfterAccess(30*time.Second),
-		cache.WithRefreshAfterWrite(20*time.Second),
+		//cache.WithRefreshAfterWrite(20*time.Second),
 		cache.WithRemovalListener(remove),
 	)
 
@@ -34,7 +34,7 @@ func main() {
 			fmt.Printf("get %v: %v\n", k, v)
 		case <-reportTicker:
 			st := cache.Stats{}
-			c.Stats(&st)
+			//c.Stats(&st)
 			fmt.Printf("total: %d, hits: %d (%.2f%%), misses: %d (%.2f%%), evictions: %d, load: %s (%s)\n",
 				st.RequestCount(), st.HitCount, st.HitRate()*100.0, st.MissCount, st.MissRate()*100.0,
 				st.EvictionCount, st.TotalLoadTime, st.AverageLoadPenalty())

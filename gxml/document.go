@@ -1,8 +1,8 @@
 package gxml
 
 import (
-	"engine/gxml/etree"
-	"engine/log"
+	"github.com/yhhaiua/engine/gxml/etree"
+	"github.com/yhhaiua/engine/log"
 	"io/ioutil"
 	"reflect"
 	"strconv"

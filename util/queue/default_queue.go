@@ -1,12 +1,12 @@
 package queue
 
 import (
-	"engine/job"
-	"engine/util"
+	"github.com/yhhaiua/engine/job"
+	"github.com/yhhaiua/engine/util"
 	"sync"
 )
 
-//DefaultQueue 消息队列处理 T为指针或接口
+// DefaultQueue 消息队列处理 T为指针或接口
 type DefaultQueue[T any] struct {
 	sync.Mutex
 	queue      []T
@@ -17,7 +17,7 @@ type DefaultQueue[T any] struct {
 	task       func(i T)
 }
 
-//NewDefault 新建默认队列
+// NewDefault 新建默认队列
 func NewDefault[T any](task func(i T)) *DefaultQueue[T] {
 	q := new(DefaultQueue[T])
 	q.queue = make([]T, 4)
@@ -26,7 +26,7 @@ func NewDefault[T any](task func(i T)) *DefaultQueue[T] {
 	return q
 }
 
-//Add 向队列中添加数据
+// Add 向队列中添加数据
 func (d *DefaultQueue[T]) Add(entry T) {
 	d.Lock()
 	if d.queueIndex+1 > len(d.queue) {
@@ -42,7 +42,7 @@ func (d *DefaultQueue[T]) Add(entry T) {
 	job.Submit(d.Run)
 }
 
-//Run 新协程运行数据
+// Run 新协程运行数据
 func (d *DefaultQueue[T]) Run() {
 	//==============================================
 	d.Lock()

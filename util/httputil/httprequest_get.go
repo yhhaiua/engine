@@ -1,8 +1,8 @@
 package httputil
 
 import (
-	"engine/util/cast"
-	"engine/util/treemap"
+	"github.com/yhhaiua/engine/util/cast"
+	"github.com/yhhaiua/engine/util/treemap"
 	"io/ioutil"
 	"net/http"
 	"strings"

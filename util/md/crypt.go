@@ -5,12 +5,12 @@ import (
 	"crypto/md5"
 	"crypto/sha256"
 	"encoding/hex"
-	"engine/util/cast"
-	"engine/util/treemap"
+	"github.com/yhhaiua/engine/util/cast"
+	"github.com/yhhaiua/engine/util/treemap"
 	"strings"
 )
 
-//GetMD5 获取MD5
+// GetMD5 获取MD5
 func GetMD5(src string) string {
 	md5Ctx := md5.New()
 	md5Ctx.Write([]byte(src))
@@ -19,7 +19,7 @@ func GetMD5(src string) string {
 	return sign
 }
 
-//CheckMd5Value 检测Map值组成的MD5
+// CheckMd5Value 检测Map值组成的MD5
 func CheckMd5Value(tree *treemap.Map, sign, key string) (string, bool) {
 	md := GenerateMd5Value(tree, key)
 	if md != sign {
@@ -28,7 +28,7 @@ func CheckMd5Value(tree *treemap.Map, sign, key string) (string, bool) {
 	return md, true
 }
 
-//GenerateMd5Value 生成Md5(只有Value)
+// GenerateMd5Value 生成Md5(只有Value)
 func GenerateMd5Value(tree *treemap.Map, key string) string {
 	it := tree.Iterator()
 	var b strings.Builder
@@ -41,7 +41,7 @@ func GenerateMd5Value(tree *treemap.Map, key string) string {
 	return GetMD5(b.String())
 }
 
-//GenerateMd5Map 生成Md5(Key = Value)
+// GenerateMd5Map 生成Md5(Key = Value)
 func GenerateMd5Map(tree *treemap.Map, key string) string {
 	it := tree.Iterator()
 	var b strings.Builder

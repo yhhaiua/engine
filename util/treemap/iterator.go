@@ -1,6 +1,6 @@
 package treemap
 
-import "engine/util/containers"
+import "github.com/yhhaiua/engine/util/containers"
 
 func assertIteratorImplementation() {
 	var _ containers.ReverseIteratorWithKey = (*Iterator)(nil)

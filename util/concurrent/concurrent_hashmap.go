@@ -1,7 +1,7 @@
 package concurrent
 
 import (
-	"engine/util"
+	"github.com/yhhaiua/engine/util"
 	"sync"
 )
 

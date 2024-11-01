@@ -1,9 +1,9 @@
 package logzap
 
 import (
-	"engine/util"
 	"fmt"
 	zaprotatelogs "github.com/lestrrat-go/file-rotatelogs"
+	"github.com/yhhaiua/engine/util"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"math"

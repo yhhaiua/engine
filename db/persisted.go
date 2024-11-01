@@ -1,7 +1,7 @@
 package db
 
 import (
-	"engine/util/concurrent"
+	"github.com/yhhaiua/engine/util/concurrent"
 	"sync"
 	"time"
 )

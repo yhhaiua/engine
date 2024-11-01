@@ -1,7 +1,7 @@
 package net
 
 import (
-	"engine/log"
+	"github.com/yhhaiua/engine/log"
 	"net"
 	"time"
 )

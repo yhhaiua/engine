@@ -1,7 +1,7 @@
 package perf
 
 import (
-	"engine/log"
+	"github.com/yhhaiua/engine/log"
 	"net/http"
 	_ "net/http/pprof"
 )

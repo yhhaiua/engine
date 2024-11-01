@@ -1,7 +1,7 @@
 package db
 
 import (
-	"engine/log"
+	"github.com/yhhaiua/engine/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"strings"
@@ -61,7 +61,7 @@ func (a *Accessor) Create(entity interface{}) {
 		logger.Errorf("mysql Create error:%s", result.Error.Error())
 	}
 }
- 
+
 func (a *Accessor) Save(entity interface{}) {
 	result := a.db.Save(entity)
 	if result.Error != nil {

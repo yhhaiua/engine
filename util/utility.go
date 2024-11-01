@@ -1,7 +1,7 @@
 package util
 
 import (
-	"engine/util/cast"
+	"github.com/yhhaiua/engine/util/cast"
 	"strconv"
 	"strings"
 )

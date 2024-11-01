@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"engine/log"
+	"github.com/yhhaiua/engine/log"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -101,7 +101,7 @@ func (c *localCache) Close() error {
 	return nil
 }
 
-//Count 本地缓存中的数据
+// Count 本地缓存中的数据
 func (c *localCache) Count() int {
 	return c.cache.len()
 }
@@ -347,7 +347,7 @@ func (c *localCache) access(en *entry) {
 	c.accessQueue.access(en)
 }
 
-//create 加锁创建，避免重复创建
+// create 加锁创建，避免重复创建
 func (c *localCache) create(en *entry, cen *entry) (*entry, error, event) {
 	en.mutex.Lock()
 	defer en.mutex.Unlock()

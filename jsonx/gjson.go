@@ -1,8 +1,8 @@
 package jsonx
 
 import (
-	"engine/log"
 	jsoniter "github.com/json-iterator/go"
+	"github.com/yhhaiua/engine/log"
 )
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary

@@ -1,7 +1,7 @@
 package db
 
 import (
-	"engine/util"
+	"github.com/yhhaiua/engine/util"
 	"gorm.io/gorm"
 )
 

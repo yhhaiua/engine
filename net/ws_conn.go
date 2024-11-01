@@ -1,10 +1,10 @@
 package net
 
 import (
-	"engine/buffer"
-	"engine/handler"
-	"engine/util"
 	"github.com/gorilla/websocket"
+	"github.com/yhhaiua/engine/buffer"
+	"github.com/yhhaiua/engine/handler"
+	"github.com/yhhaiua/engine/util"
 	"sync"
 )
 
@@ -129,12 +129,12 @@ func (t *WSConn) run() {
 
 }
 
-//Destroy 目标通知断开后销毁
+// Destroy 目标通知断开后销毁
 func (t *WSConn) Destroy() {
 	t.doDestroy()
 }
 
-//WriteAndFlush 向目标发送数据
+// WriteAndFlush 向目标发送数据
 func (t *WSConn) WriteAndFlush(msg []byte) {
 	if t.closeData {
 		return
@@ -142,7 +142,7 @@ func (t *WSConn) WriteAndFlush(msg []byte) {
 	t.doWrite(msg)
 }
 
-//Close 主动关闭连接（调用前先向目标发送关闭信息）
+// Close 主动关闭连接（调用前先向目标发送关闭信息）
 func (t *WSConn) Close() {
 	t.closeMutex.Lock()
 	defer t.closeMutex.Unlock()

@@ -1,7 +1,7 @@
 package containers_test
 
 import (
-	"engine/util/containers"
+	"github.com/yhhaiua/engine/util/containers"
 	"math/rand"
 	"testing"
 )

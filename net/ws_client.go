@@ -1,8 +1,8 @@
 package net
 
 import (
-	"engine/buffer"
 	"github.com/gorilla/websocket"
+	"github.com/yhhaiua/engine/buffer"
 	"strings"
 )
 

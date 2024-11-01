@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"engine/cache/synthetic"
+	"github.com/yhhaiua/engine/cache/synthetic"
 )
 
 const (
@@ -59,7 +59,7 @@ func BenchmarkHotspot(b *testing.B) {
 
 func benchmarkCache(b *testing.B, g synthetic.Generator) {
 	c := New(WithMaximumSize(testMaxSize))
-	defer c.Close()
+	//defer c.Close()
 
 	intCh := make(chan int, 100)
 	go func(n int) {
@@ -90,7 +90,7 @@ func printStats(b *testing.B, c Cache, start time.Time) {
 	dur := time.Since(start)
 
 	var st Stats
-	c.Stats(&st)
+	//c.Stats(&st)
 
 	b.Logf("total: %d (%s), hits: %d (%.2f%%), misses: %d (%.2f%%), evictions: %d\n",
 		st.RequestCount(), dur,

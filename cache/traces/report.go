@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"engine/cache"
+	"github.com/yhhaiua/engine/cache"
 )
 
 type Reporter interface {
@@ -50,7 +50,7 @@ var policies = []string{
 
 func benchmarkCache(p Provider, r Reporter, opt options) {
 	c := cache.New(cache.WithMaximumSize(opt.cacheSize), cache.WithPolicy(opt.policy))
-	defer c.Close()
+	//defer c.Close()
 
 	keys := make(chan interface{}, 100)
 	ctx, cancel := context.WithCancel(context.Background())
@@ -73,12 +73,12 @@ func benchmarkCache(p Provider, r Reporter, opt options) {
 		}
 		i++
 		if opt.reportInterval > 0 && i%opt.reportInterval == 0 {
-			c.Stats(&stats)
+			//c.Stats(&stats)
 			r.Report(stats, opt)
 		}
 	}
 	if opt.reportInterval == 0 {
-		c.Stats(&stats)
+		//c.Stats(&stats)
 		r.Report(stats, opt)
 	}
 }

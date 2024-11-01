@@ -1,8 +1,8 @@
 package concurrent
 
 import (
-	"engine/util"
-	"engine/util/cast"
+	"github.com/yhhaiua/engine/util"
+	"github.com/yhhaiua/engine/util/cast"
 	"sync"
 )
 

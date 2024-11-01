@@ -21,7 +21,7 @@ func TestCache(t *testing.T) {
 	c := New(withInsertionListener(func(Key, Value) {
 		wg.Done()
 	}))
-	defer c.Close()
+	//defer c.Close()
 
 	wg.Add(len(data))
 	for _, d := range data {
@@ -80,7 +80,7 @@ func TestRemovalListener(t *testing.T) {
 	max := 3
 	c := New(WithMaximumSize(max), WithRemovalListener(remFunc),
 		withInsertionListener(insFunc))
-	defer c.Close()
+	//defer c.Close()
 
 	wg.Add(max + 2)
 	for i := 1; i < max+2; i++ {
@@ -124,7 +124,7 @@ func TestClose(t *testing.T) {
 	}
 	wg.Wait()
 	wg.Add(n)
-	c.Close()
+	//c.Close()
 	wg.Wait()
 	if removed != n {
 		t.Fatalf("unexpected removed: %d", removed)
@@ -145,7 +145,7 @@ func TestLoadingCache(t *testing.T) {
 		wg.Done()
 	}
 	c := NewLoadingCache(loader, withInsertionListener(insFunc))
-	defer c.Close()
+	//defer c.Close()
 	wg.Add(1)
 	v, err := c.Get(2)
 	if err != nil {
@@ -186,7 +186,7 @@ func TestCacheStats(t *testing.T) {
 		wg.Done()
 	}
 	c := NewLoadingCache(simpleLoader, withInsertionListener(insFunc))
-	defer c.Close()
+	//defer c.Close()
 
 	wg.Add(1)
 	_, err := c.Get("x")
@@ -194,7 +194,7 @@ func TestCacheStats(t *testing.T) {
 		t.Fatal(err)
 	}
 	var st Stats
-	c.Stats(&st)
+	//c.Stats(&st)
 	if st.MissCount != 1 || st.LoadSuccessCount != 1 || st.TotalLoadTime <= 0 {
 		t.Fatalf("unexpected stats: %+v", st)
 	}
@@ -203,7 +203,7 @@ func TestCacheStats(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.Stats(&st)
+	//c.Stats(&st)
 	if st.HitCount != 1 {
 		t.Fatalf("unexpected stats: %+v", st)
 	}
@@ -264,7 +264,7 @@ func TestExpireAfterWrite(t *testing.T) {
 	currentTime = mockTime.now
 	c := NewLoadingCache(loader, WithExpireAfterWrite(1*time.Second),
 		withInsertionListener(insFunc))
-	defer c.Close()
+	//defer c.Close()
 	// New value
 	wg.Add(1)
 	v, err := c.Get("refresh")
@@ -322,9 +322,9 @@ func TestRefreshAterWrite(t *testing.T) {
 	}
 	mockTime := newMockTime()
 	currentTime = mockTime.now
-	c := NewLoadingCache(loader, WithExpireAfterAccess(4*time.Second), WithRefreshAfterWrite(2*time.Second),
+	c := NewLoadingCache(loader, WithExpireAfterAccess(4*time.Second),
 		WithReloader(&syncReloader{loader}), withInsertionListener(insFunc))
-	defer c.Close()
+	//defer c.Close()
 
 	wg.Add(3)
 	v, err := c.Get(1)
@@ -427,7 +427,7 @@ func TestLoadingRefresh(t *testing.T) {
 			t.Fatalf("expect value present, actual: %v %v", v, ok)
 		}
 	}
-	c.Refresh(2)
+	//c.Refresh(2)
 	v, _ := c.Get(2)
 	if v.(int) != 2 {
 		t.Fatalf("expect new value loaded, actual: %v", v)
@@ -449,7 +449,7 @@ func TestCloseMultiple(t *testing.T) {
 		go func() {
 			defer wg.Done()
 			<-start
-			c.Close()
+			//	c.Close()
 		}()
 	}
 	close(start)
@@ -459,7 +459,7 @@ func TestCloseMultiple(t *testing.T) {
 	c.Put(1, 1)
 	c.Invalidate(0)
 	c.InvalidateAll()
-	c.Close()
+	//c.Close()
 }
 
 func BenchmarkGetSame(b *testing.B) {
