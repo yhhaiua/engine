@@ -137,14 +137,14 @@ func (c *localCache) Put(k Key, v Value) {
 	}
 	now := currentTime()
 	if en == nil || en.getValue() == nil {
-		en, cen := seg.create(k, v, c)
+		en, _ = seg.create(k, v, c)
 		c.setEntryWriteTime(en, now)
 		c.setEntryAccessTime(en, now)
-		if cen != nil {
-			cen.setValue(v)
-			c.setEntryWriteTime(cen, now)
-			en = cen
-		}
+		//if cen != nil {
+		//	cen.setValue(v)
+		//	c.setEntryWriteTime(cen, now)
+		//	en = cen
+		//}
 	} else {
 		// Update value and send notice
 		en.setValue(v)
@@ -248,6 +248,7 @@ func (c *localCache) processEntries() {
 	defer func() {
 		if r := recover(); r != nil {
 			logger.TraceErr(r)
+			go c.processEntries()
 		}
 	}()
 	for {
@@ -364,11 +365,11 @@ func (c *localCache) create(en *entry, cen *entry) (*entry, error, event) {
 			return nil, err, eventNo
 		}
 		en.setValue(v)
-		if cen != nil {
-			cen.setValue(v)
-			c.setEntryWriteTime(cen, now)
-			en = cen
-		}
+		//if cen != nil {
+		//	cen.setValue(v)
+		//	c.setEntryWriteTime(cen, now)
+		//	en = cen
+		//}
 		//c.sendEvent(eventWrite, en)
 		c.stats.RecordLoadSuccess(loadTime)
 		return en, nil, eventWrite
