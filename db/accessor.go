@@ -88,7 +88,7 @@ func (a *Accessor) First(id interface{}, entity interface{}) bool {
 	if result.Error != nil {
 		if result.Error.Error() != "record not found" {
 			logger.Errorf("mysql First error:%s", result.Error.Error())
-			panic(result.Error.Error())
+			//panic(result.Error.Error())
 		}
 		return false
 	}
@@ -100,7 +100,7 @@ func (a *Accessor) FindAll(entity interface{}) {
 	if result.Error != nil {
 		if result.Error.Error() != "record not found" {
 			logger.Errorf("mysql FindAll error:%s", result.Error.Error())
-			panic(result.Error.Error())
+			//panic(result.Error.Error())
 		}
 	}
 }
@@ -111,7 +111,7 @@ func (a *Accessor) FindCond(dest interface{}, query interface{}, args ...interfa
 	if result.Error != nil {
 		if result.Error.Error() != "record not found" {
 			logger.Errorf("mysql FindCond error:%s", result.Error.Error())
-			panic(result.Error.Error())
+			//panic(result.Error.Error())
 		}
 	}
 }
