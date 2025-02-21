@@ -2,24 +2,28 @@ package util
 
 import "time"
 
-//TimeMillis 获取系统的毫秒时间戳
+// TimeMillis 后续使用utils下的
+// Deprecated
 func TimeMillis() int64 {
 	return time.Now().UnixMilli()
 }
 
-//TimeSecond 获取系统的秒时间戳
+// TimeSecond 后续使用utils下的 获取系统的秒时间戳
+// Deprecated
 func TimeSecond() int64 {
 	return time.Now().Unix()
 }
 
-//GetFirstDateOfMonth 获取传入的时间所在月份的第一天，即某月第一天的0点
+// GetFirstDateOfMonth 后续使用utils下的 获取传入的时间所在月份的第一天，即某月第一天的0点
+// Deprecated
 func GetFirstDateOfMonth(timeMillis int64) time.Time {
 	d := time.UnixMilli(timeMillis)
 	d = d.AddDate(0, 0, -d.Day()+1)
 	return GetZeroTime(d)
 }
 
-//GetFirstDateOfWeek 获取传入的时间所在周的周一，即某周周一的0点
+// GetFirstDateOfWeek 后续使用utils下的 获取传入的时间所在周的周一，即某周周一的0点
+// Deprecated
 func GetFirstDateOfWeek(timeMillis int64) time.Time {
 	d := time.UnixMilli(timeMillis)
 	offset := int(time.Monday - d.Weekday())
@@ -31,19 +35,22 @@ func GetFirstDateOfWeek(timeMillis int64) time.Time {
 	return d
 }
 
-//GetMorning 获取时间的零点
+// GetMorning 后续使用utils下的 获取时间的零点
+// Deprecated
 func GetMorning(timeMillis int64) int64 {
 	t := time.UnixMilli(timeMillis)
 	newTime := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
 	return newTime.UnixMilli()
 }
 
-//GetZeroTime 获取某一天的0点时间
+// GetZeroTime 后续使用utils下的 获取某一天的0点时间
+// Deprecated
 func GetZeroTime(d time.Time) time.Time {
 	return time.Date(d.Year(), d.Month(), d.Day(), 0, 0, 0, 0, d.Location())
 }
 
-//IsSameDay 是否同一天
+// IsSameDay 后续使用utils下的 是否同一天
+// Deprecated
 func IsSameDay(tM1, tM2 int64) bool {
 	t1 := time.UnixMilli(tM1)
 	t2 := time.UnixMilli(tM2)
@@ -53,7 +60,8 @@ func IsSameDay(tM1, tM2 int64) bool {
 	return false
 }
 
-//IsToDay 是否是今天
+// IsToDay 后续使用utils下的 是否是今天
+// Deprecated
 func IsToDay(millis int64) bool {
 	t1 := time.Now()
 	t2 := time.UnixMilli(millis)
