@@ -1,10 +1,12 @@
 package queue
 
 import (
-	"github.com/yhhaiua/engine/job"
+	"github.com/yhhaiua/engine/log"
 	"github.com/yhhaiua/engine/util"
 	"sync"
 )
+
+var logger = log.GetLogger()
 
 // DefaultQueue 消息队列处理 T为指针或接口
 type DefaultQueue[T any] struct {
@@ -39,12 +41,18 @@ func (d *DefaultQueue[T]) Add(entry T) {
 	if !d.state.CompareAndSet(0, 1) {
 		return
 	}
-	job.Submit(d.Run)
+	//job.Submit(d.Run)
+	go d.Run()
 }
 
 // Run 新协程运行数据
 func (d *DefaultQueue[T]) Run() {
 	//==============================================
+	defer func() {
+		if r := recover(); r != nil {
+			logger.TraceErr(r)
+		}
+	}()
 	d.Lock()
 	if len(d.temp) < len(d.queue) {
 		d.temp = make([]T, len(d.queue))
@@ -65,7 +73,7 @@ func (d *DefaultQueue[T]) Run() {
 	//==============================================
 	d.Lock()
 	if d.queueIndex > 0 {
-		job.Submit(d.Run)
+		go d.Run()
 	} else {
 		d.state.Set(0)
 	}
