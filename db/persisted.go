@@ -7,22 +7,28 @@ import (
 )
 
 type TimingPersisted struct {
-	elements concurrent.HashMap[string, *Element]
-	name     string
-	timer    *time.Ticker
-	shut     chan bool
-	wg       *sync.WaitGroup
-	stop     bool
-	m        *sync.RWMutex
-	locks    concurrent.HashMap[string, *sync.Mutex]
+	elements   concurrent.HashMap[string, *Element]
+	name       string
+	timer      *time.Ticker
+	shut       chan bool
+	wg         *sync.WaitGroup
+	stop       bool
+	m          *sync.RWMutex
+	locks      concurrent.HashMap[string, *sync.Mutex]
+	recordTime int64
+	once       chan bool
 }
 
-func newTimingPersisted(cron time.Duration) *TimingPersisted {
+func newTimingPersisted(cron time.Duration, isRecord bool) *TimingPersisted {
 	persisted := new(TimingPersisted)
 	persisted.name = cron.String() + "db saver"
 	persisted.shut = make(chan bool)
 	persisted.timer = time.NewTicker(cron)
 	persisted.m = new(sync.RWMutex)
+	persisted.once = make(chan bool)
+	if isRecord {
+		persisted.recordTime = time.Now().Unix()
+	}
 	go persisted.run()
 	return persisted
 }
@@ -52,6 +58,12 @@ func (t *TimingPersisted) shutDown() {
 	t.shut <- true
 	t.wg.Wait()
 	logger.Warnf("关闭程序保存数据完成:%s", t.name)
+}
+func (t *TimingPersisted) onceSave() {
+	if t.recordTime != 0 {
+		return
+	}
+	t.once <- true
 }
 func (t *TimingPersisted) put(element *Element) {
 	if element == nil || t.stop {
@@ -91,6 +103,17 @@ func (t *TimingPersisted) run() {
 		case <-t.timer.C:
 			//定时器处理
 			t.timerProcessing()
+			if t.recordTime != 0 {
+				now := time.Now().Unix()
+				if now-t.recordTime >= 20 {
+					logger.Warnf("保存数据，出现往后调时间，进行一次保存")
+					go globalDbServer.OnceSave()
+				}
+				t.recordTime = now
+			}
+		case <-t.once:
+			ret := t.timerProcessing()
+			logger.Warnf("调时间保存数据:%s，进行一次保存,保存数据:%d条", t.name, ret)
 		case <-t.shut:
 			ret := t.timerProcessing() //对数据进行保存
 			logger.Warnf("关闭程序保存数据:%s,保存数据:%d条", t.name, ret)

@@ -13,10 +13,10 @@ var globalDbServer = &dbServer{}
 // InitDB 初始化数据库缓存信息
 func (d *dbServer) InitDBCache() {
 	d.persisted = make(map[time.Duration]*TimingPersisted)
-	d.persisted[PRE5SECOND] = newTimingPersisted(PRE5SECOND)
-	d.persisted[PRE30SECOND] = newTimingPersisted(PRE30SECOND)
-	d.persisted[PRE1MINUTE] = newTimingPersisted(PRE1MINUTE)
-	d.persisted[PRE5MINUTE] = newTimingPersisted(PRE5MINUTE)
+	d.persisted[PRE5SECOND] = newTimingPersisted(PRE5SECOND, true)
+	d.persisted[PRE30SECOND] = newTimingPersisted(PRE30SECOND, false)
+	d.persisted[PRE1MINUTE] = newTimingPersisted(PRE1MINUTE, false)
+	d.persisted[PRE5MINUTE] = newTimingPersisted(PRE5MINUTE, false)
 }
 
 // AddDBCache 添加数据到保存队列
@@ -52,5 +52,10 @@ func (d *dbServer) addDirty(element *Element) {
 func (d *dbServer) ShutDown() {
 	for _, v := range d.persisted {
 		v.shutDown()
+	}
+}
+func (d *dbServer) OnceSave() {
+	for _, v := range d.persisted {
+		v.onceSave()
 	}
 }
