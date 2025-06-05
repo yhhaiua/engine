@@ -12,12 +12,22 @@ type TCPServer struct {
 	addr     string
 	listener SocketListener
 	ln       net.Listener
+	length   int
 }
 
 func NewTCPServer(addr string, listener SocketListener) *TCPServer {
 	server := &TCPServer{
 		addr:     addr,
 		listener: listener,
+		length:   327670,
+	}
+	return server
+}
+func NewTCPServerLength(addr string, listener SocketListener, length int) *TCPServer {
+	server := &TCPServer{
+		addr:     addr,
+		listener: listener,
+		length:   length,
 	}
 	return server
 }
@@ -58,7 +68,7 @@ func (server *TCPServer) run() {
 			return
 		}
 		tempDelay = 0
-		tcpConn := newTcpConn(conn, server.listener)
+		tcpConn := newTcpConn(conn, server.listener, server.length)
 		if tcpConn != nil {
 			tcpConn.start()
 		}

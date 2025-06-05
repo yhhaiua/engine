@@ -18,6 +18,7 @@ type TCPClient struct {
 	addr     string
 	listener SocketRunListener
 	tcpConn  *TCPConn
+	length   int
 }
 
 func NewTCPClient(index string, addr string, listener SocketRunListener) *TCPClient {
@@ -25,6 +26,16 @@ func NewTCPClient(index string, addr string, listener SocketRunListener) *TCPCli
 		addr:     addr,
 		listener: listener,
 		index:    index,
+		length:   327670,
+	}
+	return client
+}
+func NewTCPClientLength(index string, addr string, listener SocketRunListener, length int) *TCPClient {
+	client := &TCPClient{
+		addr:     addr,
+		listener: listener,
+		index:    index,
+		length:   length,
 	}
 	return client
 }
@@ -41,7 +52,7 @@ func (client *TCPClient) Connect() {
 	conn := client.dial()
 	if conn != nil {
 		logger.Infof("%s,tcp connect success:%s", client.index, client.addr)
-		client.tcpConn = newTcpConn(conn, client)
+		client.tcpConn = newTcpConn(conn, client, client.length)
 		if client.tcpConn != nil {
 			client.tcpConn.start()
 		}

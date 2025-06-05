@@ -36,7 +36,7 @@ func (t *TCPConn) Ip() string {
 	return info[0]
 }
 
-func newTcpConn(conn net.Conn, listener SocketListener) *TCPConn {
+func newTcpConn(conn net.Conn, listener SocketListener, length int) *TCPConn {
 	t := new(TCPConn)
 	t.conn = conn
 	t.listener = listener
@@ -44,7 +44,7 @@ func newTcpConn(conn net.Conn, listener SocketListener) *TCPConn {
 	t.chData = make(chan []byte, TcpDataLength)
 	t.chStopWrite = make(chan struct{})
 	t.connected = true
-	hd, err := handler.NewLengthDecoder()
+	hd, err := handler.NewLengthDecoderClient(length)
 	if err != nil {
 		logger.Errorf("new TcpConn err: %s", err.Error())
 		return nil
