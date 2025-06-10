@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/yhhaiua/engine/job"
 	"github.com/yhhaiua/engine/util/concurrent"
 	"sync"
 	"time"
@@ -107,7 +108,7 @@ func (t *TimingPersisted) run() {
 				now := time.Now().Unix()
 				if now-t.recordTime >= 20 {
 					logger.Warnf("保存数据，出现往后调时间，进行一次保存")
-					go globalDbServer.OnceSave()
+					job.Submit(globalDbServer.OnceSave)
 				}
 				t.recordTime = now
 			}
