@@ -1,10 +1,10 @@
 module github.com/yhhaiua/engine
 
-go 1.19
+go 1.23
 
 require (
 	github.com/garyburd/redigo v1.6.3
-	github.com/gorilla/websocket v1.5.0
+	github.com/gorilla/websocket v1.5.3
 	github.com/json-iterator/go v1.1.12
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/panjf2000/ants/v2 v2.5.0
