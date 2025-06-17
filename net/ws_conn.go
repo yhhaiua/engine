@@ -6,11 +6,18 @@ import (
 	"github.com/yhhaiua/engine/handler"
 	"github.com/yhhaiua/engine/util"
 	"sync"
+	"time"
 )
 
 var globalId = &util.AtomicLong{}
 
-const WsDataLength = 100
+const (
+	WsDataLength       = 100
+	pongWait           = 60 * time.Second  //等待时间
+	pingPeriod         = 9 * pongWait / 10 //周期54s
+	maxMsgSize   int64 = 32767 * 2         //消息最大长度
+	writeWait          = 10 * time.Second  //
+)
 
 type WSConn struct {
 	closeMutex    sync.Mutex
@@ -68,6 +75,16 @@ func (t *WSConn) read() {
 			t.listener.OnDisconnected(t)
 		}
 	}()
+	//一次从管管中读取的最大长度
+	t.conn.SetReadLimit(maxMsgSize)
+	//连接中，每隔54秒向客户端发一次ping，客户端返回pong，所以把SetReadDeadline设为60秒，超过60秒后不允许读
+	_ = t.conn.SetReadDeadline(time.Now().Add(pongWait))
+	//心跳
+	t.conn.SetPongHandler(func(appData string) error {
+		//每次收到pong都把deadline往后推迟60秒
+		_ = t.conn.SetReadDeadline(time.Now().Add(pongWait))
+		return nil
+	})
 	for {
 		_, b, err := t.conn.ReadMessage()
 		if err != nil {
@@ -98,7 +115,10 @@ func (t *WSConn) read() {
 }
 
 func (t *WSConn) run() {
+	//给前端发心跳，看前端是否还存活
+	ticker := time.NewTicker(pingPeriod)
 	defer func() {
+		ticker.Stop()
 		if r := recover(); r != nil {
 			logger.TraceErr(r)
 			t.close()
@@ -114,6 +134,8 @@ func (t *WSConn) run() {
 				return
 			}
 			if msg != nil && t.connected {
+				//10秒内必须把信息写给前端（写到websocket连接里去），否则就关闭连接
+				_ = t.conn.SetWriteDeadline(time.Now().Add(writeWait))
 				err := t.conn.WriteMessage(websocket.BinaryMessage, msg)
 				if err != nil {
 					logger.Errorf(" WriteMessage:%s", err.Error())
@@ -124,6 +146,14 @@ func (t *WSConn) run() {
 		case <-t.chStopWrite:
 			logger.Infof("chStopWrite destroy:%s", t.Ip())
 			return
+		case <-ticker.C:
+			_ = t.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			//心跳保持，给浏览器发一个PingMessage，等待浏览器返回PongMessage
+			if err := t.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+				logger.Errorf(" websocket.PingMessage:%s", err.Error())
+				t.close()
+				return //写websocket连接失败，说明连接出问题了，该client可以over了
+			}
 		}
 	}
 
