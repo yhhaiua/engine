@@ -13,7 +13,7 @@ const (
 	// Buffer size of entry channels
 	chanBufSize = 64
 	// Maximum number of entries to be drained in a single clean up.
-	drainMax = 16
+	drainMax = 128
 	// Number of cache access operations that will trigger clean up.
 	drainThreshold = 64
 )
