@@ -1,6 +1,6 @@
 module github.com/yhhaiua/engine
 
-go 1.23
+go 1.24
 
 require (
 	github.com/garyburd/redigo v1.6.3
