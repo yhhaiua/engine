@@ -13,10 +13,10 @@ var globalId = &util.AtomicLong{}
 
 const (
 	WsDataLength       = 100
-	pongWait           = 2 * 60 * time.Second //等待时间
-	pingPeriod         = 8 * pongWait / 10    //周期54s
-	maxMsgSize   int64 = 32767 * 2            //消息最大长度
-	writeWait          = 10 * time.Second     //
+	pongWait           = 60 * time.Second  //等待时间
+	pingPeriod         = 7 * pongWait / 10 //周期42s
+	maxMsgSize   int64 = 32767 * 2         //消息最大长度
+	writeWait          = 10 * time.Second  //
 )
 
 type WSConn struct {
