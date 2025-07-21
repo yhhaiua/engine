@@ -20,3 +20,13 @@ func (s *Set[Elem]) Contains(v Elem) bool {
 	_, ok := s.data[v]
 	return ok
 }
+func (s *Set[Elem]) ToSlice() []Elem {
+	if s.data == nil {
+		return nil
+	}
+	var result []Elem
+	for k := range s.data {
+		result = append(result, k)
+	}
+	return result
+}
