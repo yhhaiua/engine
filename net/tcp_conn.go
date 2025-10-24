@@ -84,14 +84,21 @@ func (t *TCPConn) read() {
 			t.listener.OnDisconnected(t)
 			return
 		}
-		msg, err := t.hd.Decode(t.receive)
-		if err != nil {
-			logger.Errorf("msg err: %s", err.Error())
-			continue
+		for {
+			msg, err2 := t.hd.Decode(t.receive)
+			if err2 != nil {
+				logger.Errorf("msg err: %s", err2.Error())
+				t.close()
+				t.listener.OnDisconnected(t)
+				return
+			}
+			if msg != nil {
+				t.listener.OnData(t, msg)
+			} else {
+				break
+			}
 		}
-		if msg != nil {
-			t.listener.OnData(t, msg)
-		}
+
 	}
 }
 
