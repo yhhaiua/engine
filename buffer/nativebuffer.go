@@ -59,11 +59,11 @@ func (buf *ByteBuf) ReadNInt64() int64 {
 
 // ReadNBytes 读取bytes
 func (buf *ByteBuf) ReadNBytes() []byte {
-	len := buf.ReadNInt16()
+	len := buf.ReadNInt32()
 	if len == 0 {
 		return nil
 	}
-	result := buf.Next(len)
+	result := buf.Next(int(len))
 	return result
 }
 
@@ -155,10 +155,10 @@ func (buf *ByteBuf) WriteNInt64(v int64) {
 // WriteNBytes 写字节数组
 func (buf *ByteBuf) WriteNBytes(v []byte) {
 	if v == nil {
-		buf.WriteNInt16(0)
+		buf.WriteNInt32(0)
 		return
 	}
-	buf.WriteNInt16(len(v))
+	buf.WriteNInt32(int32(len(v)))
 	_, _ = buf.Write(v)
 }
 
