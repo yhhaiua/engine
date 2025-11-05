@@ -64,7 +64,9 @@ func (buf *ByteBuf) ReadNBytes() []byte {
 		return nil
 	}
 	result := buf.Next(int(len))
-	return result
+	dup := make([]byte, len)
+	copy(dup, result)
+	return dup
 }
 
 // ReadNInt16Array 读取int16数组
