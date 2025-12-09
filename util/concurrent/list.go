@@ -283,3 +283,10 @@ func (c *CopyOnWriteArrayList[V]) get(a []V, index int) (V, bool) {
 func (c *CopyOnWriteArrayList[V]) Get(index int) (V, bool) {
 	return c.get(c.getArray(), index)
 }
+
+// Clear 清空列表
+func (c *CopyOnWriteArrayList[V]) Clear() {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	c.setArray(make([]V, 0))
+}
