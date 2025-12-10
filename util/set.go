@@ -30,3 +30,9 @@ func (s *Set[Elem]) ToSlice() []Elem {
 	}
 	return result
 }
+func (s *Set[Elem]) Size() int {
+	if s.data == nil {
+		return 0
+	}
+	return len(s.data)
+}
