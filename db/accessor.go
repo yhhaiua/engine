@@ -4,7 +4,6 @@ import (
 	"github.com/yhhaiua/engine/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"strings"
 	"time"
 )
 
@@ -22,15 +21,11 @@ var accessor = &Accessor{}
 
 func (a *Accessor) LoadConfig(config *MysqlConfig) bool {
 
-	var defaultSize uint = 191
-	if strings.Contains(config.Config, "utf8mb4") {
-		defaultSize = 191
-	} else if strings.Contains(config.Config, "utf8") {
-		defaultSize = 255
-	}
 	mysqlConfig := mysql.Config{
-		DSN:               config.Dsn(), // DSN data source name
-		DefaultStringSize: defaultSize,  // string 类型字段的默认长度
+		DSN: config.Dsn(), // DSN data source name
+		// MySQL 8.4 InnoDB 默认 DYNAMIC 行格式，索引键上限 3072 字节；
+		// utf8mb4 下 255 字符占 1020 字节，无需再退回 191。
+		DefaultStringSize: 255, // string 类型字段的默认长度
 	}
 	db, err := gorm.Open(mysql.New(mysqlConfig),
 		&gorm.Config{Logger: replaceLog})
